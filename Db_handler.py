@@ -57,9 +57,11 @@ class Db_handler:
                             (SELECT * FROM employees JOIN repos on employees.id=repos.owner_id
                             WHERE repos.language=?) ''',[language])
         res = self.cur.fetchall()
+        print(*res, sep='\n')
         return res 
         
     def get_language_contributors(self, language):
+        #TODO: 
         return
 
     def close(self):
