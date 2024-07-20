@@ -55,7 +55,7 @@ class Db_handler:
     def get_language_owners(self, language):
         self.cur.execute('''SELECT DISTINCT id, login FROM
                             (SELECT * FROM employees JOIN repos on employees.id=repos.owner_id
-                            WHERE repos.language=='?') ''',[language])
+                            WHERE repos.language=?) ''',[language])
         res = self.cur.fetchall()
         return res 
         
