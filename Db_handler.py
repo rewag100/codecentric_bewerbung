@@ -12,7 +12,7 @@ class Db_handler:
                        (id Integer PRIMARY KEY NOT NULL, login text);''')  
         self.con.commit()
         self.cur.execute('''CREATE TABLE IF NOT EXISTS repos  
-                            (id Integer PRIMARY KEY NOT NULL, name text, owner_id Integer NOT NULL);''')
+                            (id Integer PRIMARY KEY NOT NULL, name text, language text, owner_id Integer NOT NULL);''')
         self.con.commit()
         self.cur.execute('''CREATE TABLE IF NOT EXISTS employee_repo_contribution  
                        (id Integer PRIMARY KEY NOT NULL, employee_id Integer NOT NULL, 
@@ -51,21 +51,15 @@ class Db_handler:
         return
 
 # Returns and prints all users, which own at least one repo with the desired language
-    def get_language_owner(self, language):
+    def get_language_owners(self, language):
         self.cur.execute('''SELECT DISTINCT id, login FROM
                             (SELECT * FROM employees JOIN repos on employees.id=repos.owner_id
                             WHERE repos.language=='?') ''',[language])
         res = self.cur.fetchall()
         return res 
-
-# Returns and prints all users, which contributet to at least one repo with the desired language
-    def get_language_owner(self, language):
-        self.cur.execute('''SELECT DISTINCT id, login FROM
-                            (SELECT * FROM employees JOIN repos on employees.id=repos.owner_id
-                            WHERE repos.language=='?') ''',[language])
-        res = self.cur.fetchall()
-        return res 
-
+        
+    def get_language_contributors(self, language):
+        return
 
     def close(self):
         self.con.close()
@@ -73,12 +67,18 @@ class Db_handler:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Query the employee database')
-    parser.add_argument('--ownerlanguage', help='Gets all people with repos in given programming language')
-    parser.add_argument('--contributionlanguage', help='Gets all people with contributions to repos in given programming language')
+    parser.add_argument('--olang', help='Gets all people with repos in given programming language')
+    parser.add_argument('--clang', help='Gets all people with contributions to repos in given programming language')
     args = parser.parse_args()
     db = Db_handler()
+    if args.olang:
+        print('Users owning repos containing ',args.olang, ':')
+        db.get_language_owners(args.olang)
+    if args.clang:
+        print('Users who contributed to repos containing ',args.clang, ':')
+        db.get_language_contributors(args.clang)
     # if args.insert_paper:
     #    print('Processing clean papers')
     #    db.all_clean_paper_into_db()
-    db.close_con()
+    db.close()
 
