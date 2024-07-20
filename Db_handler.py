@@ -61,7 +61,17 @@ class Db_handler:
         return res 
         
     def get_language_contributors(self, language):
-        #TODO: 
+        #TODO: SQL query for contributions
+        # SELECT employees.id, employees.login, number, contributions FROM employees
+        # JOIN(
+        #     SELECT employee_repo_contribution.employee_id, contributions, number FROM employee_repo_contribution
+        #     JOIN( 
+        #         SELECT repos.id, languages.number FROM repos 
+        #         JOIN( 
+        #             SELECT * FROM languages WHERE languages.language='TypeScript') AS languages 
+        #         ON repos.id=languages.repo_id) AS repo_lang
+        #     ON employee_repo_contribution.repo_id=id 
+        # ON employee_repo_contribution.employee_id=employees.id
         return
 
     def close(self):
