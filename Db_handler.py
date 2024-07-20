@@ -12,7 +12,7 @@ class Db_handler:
                        (id Integer PRIMARY KEY NOT NULL, login text);''')  
         self.con.commit()
         self.cur.execute('''CREATE TABLE IF NOT EXISTS repos  
-                            (id Integer PRIMARY KEY NOT NULL, name text, language text, owner_id Integer NOT NULL);''')
+                            (id Integer PRIMARY KEY NOT NULL, name text, owner_id Integer NOT NULL, language text);''')
         self.con.commit()
         self.cur.execute('''CREATE TABLE IF NOT EXISTS employee_repo_contribution  
                        (id Integer PRIMARY KEY NOT NULL, employee_id Integer NOT NULL, 
@@ -27,25 +27,26 @@ class Db_handler:
 
 
     def insert_employee(self, id, name):
-        self.cur.execute('''INSERT INTO employees(id, login) VALUES (?,?)''',
+        self.cur.execute('''INSERT OR REPLACE INTO employees(id, login) VALUES (?,?)''',
                          [id, name])
         self.con.commit()
         return
         
-    def insert_repo(self, id, name, language, owner_id):
-        self.cur.execute('''INSERT INTO repos(id, name, language, owner_id) VALUES (?,?,?,?)''',
-                         [id, name, language, owner_id])
+    def insert_repo(self, id, name, owner_id, language):
+        print(id, name, language, owner_id)
+        self.cur.execute('''INSERT OR REPLACE INTO repos(id, name, owner_id, language) VALUES (?,?,?,?)''',
+                         [id, name, owner_id, language])
         self.con.commit()
         return
         
     def insert_language(self, language, number, repo_id):
-        self.cur.execute('''INSERT INTO languages(repo_id, language, number) VALUES (?,?,?)''',
+        self.cur.execute('''INSERT OR REPLACE INTO languages(repo_id, language, number) VALUES (?,?,?)''',
                          [repo_id, language, number])
         self.con.commit()
         return
         
     def insert_contribution(self, employee_id, repo_id, contributions):
-        self.cur.execute('''INSERT INTO employee_repo_contribution(employee_id, repo_id, contributions) VALUES (?,?,?)''',
+        self.cur.execute('''INSERT OR REPLACE INTO employee_repo_contribution(employee_id, repo_id, contributions) VALUES (?,?,?)''',
                          [employee_id, repo_id, contributions])
         self.con.commit()
         return
